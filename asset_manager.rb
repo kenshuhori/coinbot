@@ -10,37 +10,83 @@ class AssetManager
   attr_accessor :balance
 
   def initialize
-    @key = api_key()
-    @secret = api_secret()
-    @balance = balance()
+    @bit_flyer_api = BitFlyerApi.new
+    @balance = @bit_flyer_api.balance()
   end
 
-  def api_key
-    file = open("apikey.yml", "r") { |f| YAML.load(f) }
-    file["api_key"]
+  def markets
+    @bit_flyer_api.markets
   end
 
-  def api_secret
-    file = open("apikey.yml", "r") { |f| YAML.load(f) }
-    file["api_secret"]
+  def executions(product_code)
+    @bit_flyer_api.executions(product_code)
   end
 
-  def balance
-    uri = URI.parse("https://api.bitflyer.jp")
-    uri.path = "/v1/me/getbalance"
+  def jpy
+    @balance.select { |brand| brand["currency_code"] == "JPY" }[0]
+  end
 
-    BitFlyerApi.call_api(@key, @secret, "GET", uri)
+  def btc
+    @balance.select { |brand| brand["currency_code"] == "BTC" }[0]
+  end
+
+  def bch
+    @balance.select { |brand| brand["currency_code"] == "BCH" }[0]
+  end
+
+  def eth
+    @balance.select { |brand| brand["currency_code"] == "ETH" }[0]
+  end
+
+  def etc
+    @balance.select { |brand| brand["currency_code"] == "ETC" }[0]
+  end
+
+  def ltc
+    @balance.select { |brand| brand["currency_code"] == "LTC" }[0]
+  end
+
+  def mona
+    @balance.select { |brand| brand["currency_code"] == "MONA" }[0]
+  end
+
+  def lsk
+    @balance.select { |brand| brand["currency_code"] == "LSK" }[0]
   end
 
   def xrp
     @balance.select { |brand| brand["currency_code"] == "XRP" }[0]
   end
 
+  def bat
+    @balance.select { |brand| brand["currency_code"] == "BAT" }[0]
+  end
+
+  def xlm
+    @balance.select { |brand| brand["currency_code"] == "XLM" }[0]
+  end
+
   def xem
     @balance.select { |brand| brand["currency_code"] == "XEM" }[0]
+  end
+
+  def xtz
+    @balance.select { |brand| brand["currency_code"] == "XTZ" }[0]
   end
 end
 
 asset_manager = AssetManager.new
-p asset_manager.xrp
-p asset_manager.xem
+# p asset_manager.jpy
+# p asset_manager.btc
+# p asset_manager.bch
+# p asset_manager.eth
+# p asset_manager.etc
+# p asset_manager.ltc
+# p asset_manager.mona
+# p asset_manager.lsk
+# p asset_manager.xrp
+# p asset_manager.bat
+# p asset_manager.xlm
+# p asset_manager.xem
+# p asset_manager.xtz
+p asset_manager.executions("FX_BTC_JPY").first
