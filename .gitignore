@@ -1,5 +1,5 @@
 apikey.yml
 coincheck_apikey.yml
 node_modules/*
-
+.env
 .DS_store
