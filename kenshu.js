@@ -3,28 +3,42 @@ require('dotenv').config()
 const key = process.env.api_key
 const secret = process.env.api_secret
 
-const url = require('url')
+var CoinCheck = require('./node_modules/coincheck/src/coin_check.js');
+var coinCheck = new CoinCheck.CoinCheck(process.env.api_key, process.env.api_secret);
 
-const uri = url.parse("https://coincheck.com/api/accounts/balance")
+var params = {
+    options: {
+        success: function(data, response, params) {
+            console.log('success', data);
+        },
+        error: function(error, response, params) {
+            console.log('error', error);
+        }
+    }
+};
 
-const date = new Date()
-const nonce = date.getTime()
+/** Public API */
+coinCheck.ticker.all(params);
+// coinCheck.trade.all(params);
+coinCheck.orderBook.all(params);
 
-const message = `${nonce}${uri.href}`
+/** Private API */
 
-const crypto = require('crypto')
-const signature = crypto.createHmac('sha256', secret)
-  .update(message)
-  .digest('hex')
+// 新規注文
+// "buy" 指値注文 現物取引 買い
+// "sell" 指値注文 現物取引 売り
+// "market_buy" 成行注文 現物取引 買い
+// "market_sell" 成行注文 現物取引 売り
+// "leverage_buy" 指値注文 レバレッジ取引新規 買い
+// "leverage_sell" 指値注文 レバレッジ取引新規 売り
+// "close_long" 指値注文 レバレッジ取引決済 売り
+// "close_short" 指値注文 レバレッジ取引決済 買い
+params['data'] = {
+    rate: 2850,
+    amount: 0.00508771,
+    order_type: 'buy',
+    pair: 'btc_jpy'
+}
 
-const axios = require('axios')
-axios.get(uri.href, {
-  headers: {
-    "ACCESS-KEY": key,
-    "ACCESS-NONCE": nonce,
-    "ACCESS-SIGNATURE": signature
-  }
-})
-  .then(res => {
-    console.log(res)
-  })
+// 未決済の注文一覧
+coinCheck.order.opens(params);

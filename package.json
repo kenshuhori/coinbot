@@ -18,6 +18,7 @@
   "homepage": "https://github.com/kenshuhori/coinbot#readme",
   "dependencies": {
     "axios": "^0.21.1",
+    "coincheck": "^0.2.0",
     "dotenv": "^8.2.0",
     "js-yaml": "^4.0.0"
   }
