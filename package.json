@@ -1,0 +1,22 @@
+{
+  "name": "coinbot",
+  "version": "1.0.0",
+  "description": "bitFlyerのAPIを利用した自動売買bot",
+  "main": "coincheck_api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kenshuhori/coinbot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kenshuhori/coinbot/issues"
+  },
+  "homepage": "https://github.com/kenshuhori/coinbot#readme",
+  "dependencies": {
+    "js-yaml": "^4.0.0"
+  }
+}

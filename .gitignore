@@ -1,2 +1,3 @@
 apikey.yml
 coincheck_apikey.yml
+node_modules/*
