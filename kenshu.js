@@ -2,41 +2,36 @@ require('dotenv').config()
 
 const key = process.env.api_key
 const secret = process.env.api_secret
+const url = require('url')
+const crypto = require('crypto')
 
-var CoinCheck = require('./node_modules/coincheck/src/coin_check.js');
-var coinCheck = new CoinCheck.CoinCheck(process.env.api_key, process.env.api_secret);
+const axios = require('axios')
+const { rejects } = require('assert')
+const { resolve } = require('path')
 
-var params = {
-    options: {
-        success: function(data, response, params) {
-            console.log('success', data);
-        },
-        error: function(error, response, params) {
-            console.log('error', error);
-        }
-    }
-};
-
-/** Public API */
-coinCheck.ticker.all(params);
-// coinCheck.trade.all(params);
-// coinCheck.orderBook.all(params);
-
-/** Private API */
-
-// 新規注文
-// "buy" 指値注文 現物取引 買い
-// "sell" 指値注文 現物取引 売り
-// "market_buy" 成行注文 現物取引 買い
-// "market_sell" 成行注文 現物取引 売り
-// params['data'] = {
-//   rate: 2850,
-//   amount: 0.00508771,
-//   order_type: 'buy',
-//   pair: 'btc_jpy'
-// }
-function getTicker() {
-  coinCheck.ticker.all(params);
+async function execute() {
+  // callApi('/api/accounts/balance', 'get')
+  let ticker = await callApi('/api/ticker', 'get');
+  console.log(ticker.last);
 }
 
-setInterval(getTicker, 2000);
+async function callApi(path, method) {
+  const baseUrl = 'https://coincheck.com';
+  let uri = url.parse(baseUrl + path);
+  let nonce = new Date().getTime();
+  let message = `${nonce}${uri.href}`;
+  let signature = crypto.createHmac('sha256', secret).update(message).digest('hex');
+  let headers = {
+    "ACCESS-KEY": key,
+    "ACCESS-NONCE": nonce,
+    "ACCESS-SIGNATURE": signature
+  };
+  if (method == 'get') {
+    const res = await axios.get(uri.href, {headers: headers})
+    return res.data
+  } else if (method == 'post') {
+    console.log('未実装')
+  }
+}
+
+setInterval(execute, 2000)
