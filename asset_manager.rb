@@ -18,8 +18,28 @@ class AssetManager
     @bit_flyer_api.markets
   end
 
+  def my_executions(product_code)
+    @bit_flyer_api.my_executions(product_code)
+  end
+
   def executions(product_code)
     @bit_flyer_api.executions(product_code)
+  end
+
+  def commision_rate(product_code)
+    @bit_flyer_api.commision_rate(product_code)
+  end
+
+  def market_buy()
+    @bit_flyer_api.market_buy()
+  end
+
+  def market_sell(amount)
+    @bit_flyer_api.market_sell(amount)
+  end
+
+  def cancel_order(product_code, child_order_id)
+    @bit_flyer_api.cancel_order(product_code, child_order_id)
   end
 
   def jpy
@@ -89,4 +109,10 @@ asset_manager = AssetManager.new
 # p asset_manager.xlm
 # p asset_manager.xem
 # p asset_manager.xtz
-p asset_manager.executions("FX_BTC_JPY").first
+
+# child_order_id = asset_manager.my_executions("BTC_JPY").first["child_order_id"]
+# asset_manager.market_buy()
+# available = asset_manager.btc["available"]
+# p available
+# asset_manager.market_sell(available)
+# asset_manager.cancel_order("BTC_JPY", child_order_id)

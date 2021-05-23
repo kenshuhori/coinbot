@@ -19,6 +19,10 @@ class BitFlyerApi
     file["api_secret"]
   end
 
+  def uri
+    URI.parse("https://api.bitflyer.com")
+  end
+
   def call_api(method, uri, body="")
     timestamp = Time.now.to_i.to_s
 
@@ -31,42 +35,110 @@ class BitFlyerApi
                   "ACCESS-TIMESTAMP" => timestamp,
                   "ACCESS-SIGN" => sign,
                 });
-              else
+              elsif method == "POST"
                 Net::HTTP::Post.new(uri.request_uri, initheader = {
                   "ACCESS-KEY" => @key,
                   "ACCESS-TIMESTAMP" => timestamp,
                   "ACCESS-SIGN" => sign,
                   "Content-Type" => "application/json"
                 });
+              else
+                raise Exception("想定外のHTTPメソッドです。GETまたはPOSTを指定してください。")
               end
     options.body = body if body != ""
+    p body
 
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
     response = https.request(options)
 
-    JSON.parse(response.body)
+    if response.msg == "OK"
+      JSON.parse(response.body)
+    else
+      p response.msg
+      p JSON.parse(response.body)
+    end
   end
 
   def markets
-    uri = URI.parse("https://api.bitflyer.com")
+    uri = uri()
     uri.path = '/v1/markets'
 
     call_api("GET", uri)
   end
 
   def balance
-    uri = URI.parse("https://api.bitflyer.jp")
+    uri = uri()
     uri.path = "/v1/me/getbalance"
 
     call_api("GET", uri)
   end
 
+  def my_executions(product_code)
+    uri = uri()
+    uri.path = "/v1/me/getexecutions"
+    uri.query = "product_code=#{product_code}"
+
+    call_api("GET", uri)
+  end
+
   def executions(product_code)
-    uri = URI.parse("https://api.bitflyer.jp")
+    uri = uri()
     uri.path = "/v1/executions"
     uri.query = "product_code=#{product_code}"
 
     call_api("GET", uri)
+  end
+
+  def commision_rate(product_code)
+    uri = uri()
+    uri.path = "/v1/me/gettradingcommission"
+    uri.query = "product_code=#{product_code}"
+
+    call_api("GET", uri)
+  end
+
+  def market_buy()
+    body = {
+      "product_code": "BTC_JPY",
+      "child_order_type": "MARKET",
+      "side": "BUY",
+      "size": 0.001,
+      "minute_to_expire": 60,
+      "time_in_force": "GTC"
+    }.to_json
+    order(body)
+  end
+
+  def market_sell(amount)
+    body = {
+      "product_code": "BTC_JPY",
+      "child_order_type": "MARKET",
+      "side": "SELL",
+      "size": 0.001,
+      "minute_to_expire": 60,
+      "time_in_force": "GTC"
+    }.to_json
+    order(body)
+  end
+
+  def cancel_order(product_code, child_order_id)
+    uri = uri()
+    uri.path = "/v1/me/cancelchildorder"
+    body = {
+      "product_code": product_code,
+      "child_order_id": child_order_id
+    }.to_json
+
+    call_api("POST", uri, body)
+  end
+
+  private
+
+  def order(body)
+    uri = uri()
+    uri.path = "/v1/me/sendchildorder"
+
+    call_api("POST", uri, body)
   end
 end
