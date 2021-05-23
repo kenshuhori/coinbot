@@ -34,8 +34,8 @@ class AssetManager
     @bit_flyer_api.market_buy()
   end
 
-  def market_sell(amount)
-    @bit_flyer_api.market_sell(amount)
+  def market_sell()
+    @bit_flyer_api.market_sell()
   end
 
   def cancel_order(product_code, child_order_id)
@@ -96,6 +96,22 @@ class AssetManager
 end
 
 asset_manager = AssetManager.new
+start_time = Time.now
+loop do
+  # 一週間回す
+  # if (Time.now - start_time)/60/60/24 > 7
+  #   p "一週間経過したため終了します"
+  #   break
+  # end
+  # 1分回す
+  if (Time.now - start_time) > 60
+    p "1分経過したため終了します"
+    break
+  end
+  p asset_manager.executions("BTC_JPY").first
+  sleep 3 # 3秒停止
+end
+
 # p asset_manager.jpy
 # p asset_manager.btc
 # p asset_manager.bch

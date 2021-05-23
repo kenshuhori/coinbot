@@ -46,7 +46,6 @@ class BitFlyerApi
                 raise Exception("想定外のHTTPメソッドです。GETまたはPOSTを指定してください。")
               end
     options.body = body if body != ""
-    p body
 
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
@@ -55,8 +54,7 @@ class BitFlyerApi
     if response.msg == "OK"
       JSON.parse(response.body)
     else
-      p response.msg
-      p JSON.parse(response.body)
+      "エラー発生！！！"
     end
   end
 
@@ -110,7 +108,7 @@ class BitFlyerApi
     order(body)
   end
 
-  def market_sell(amount)
+  def market_sell()
     body = {
       "product_code": "BTC_JPY",
       "child_order_type": "MARKET",
