@@ -1,28 +1,26 @@
 require 'logger'
 require './asset_manager'
 
-def executor(asset_manager, minutes)
+def executor(asset_manager)
   logger = Logger.new('logs/result.log')
   start_time = Time.now
-  loop do
-    # 一週間回す
-    # if (Time.now - start_time)/60/60/24 > 7
-    #   p "一週間経過したため終了します"
-    #   break
-    # end
+  latest_prices = Array.new(10)
 
-    # 1分回す
-    if (Time.now - start_time) > (60 * minutes)
-      p "1分経過したため終了します"
+  loop do
+    # 1週間回す
+    if (Time.now - start_time)/60/60/24 > 7
+      p "1週間経過したため終了します"
       break
     end
-    p asset_manager.executions("BTC_JPY").first
-    logger.info(asset_manager.executions("BTC_JPY").first)
+
+    latest_prices.shift(1)
+    latest_prices.push(asset_manager.executions("BTC_JPY").first["price"])
+    p latest_prices
+    # logger.info(asset_manager.executions("BTC_JPY").first)
     # asset_manager.market_buy("BTC_JPY")
-    sleep 3 # 3秒停止
+    sleep 6
   end
 end
 
 asset_manager = AssetManager.new
-minutes = 2
-executor(asset_manager, minutes)
+executor(asset_manager)
