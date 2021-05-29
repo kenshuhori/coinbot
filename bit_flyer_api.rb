@@ -96,9 +96,9 @@ class BitFlyerApi
     call_api("GET", uri)
   end
 
-  def market_buy()
+  def market_buy(product_code)
     body = {
-      "product_code": "BTC_JPY",
+      "product_code": product_code,
       "child_order_type": "MARKET",
       "side": "BUY",
       "size": 0.001,
@@ -108,9 +108,9 @@ class BitFlyerApi
     order(body)
   end
 
-  def market_sell()
+  def market_sell(product_code)
     body = {
-      "product_code": "BTC_JPY",
+      "product_code": product_code,
       "child_order_type": "MARKET",
       "side": "SELL",
       "size": 0.001,

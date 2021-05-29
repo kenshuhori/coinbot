@@ -30,12 +30,12 @@ class AssetManager
     @bit_flyer_api.commision_rate(product_code)
   end
 
-  def market_buy()
-    @bit_flyer_api.market_buy()
+  def market_buy(product_code)
+    @bit_flyer_api.market_buy(product_code)
   end
 
-  def market_sell()
-    @bit_flyer_api.market_sell()
+  def market_sell(product_code)
+    @bit_flyer_api.market_sell(product_code)
   end
 
   def cancel_order(product_code, child_order_id)
