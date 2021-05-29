@@ -2,6 +2,6 @@ version: '2'
 services:
   app:
     build: .
-    command: ruby asset_manager.rb
+    command: ruby coinbot.rb
     volumes:
       - .:/coinbot
