@@ -1,2 +1,6 @@
 apikey.yml
 .DS_store
+docker/db/data/*
+
+# 結果のログ
+logs/*

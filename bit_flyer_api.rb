@@ -54,7 +54,8 @@ class BitFlyerApi
     if response.msg == "OK"
       JSON.parse(response.body)
     else
-      "エラー発生！！！"
+      p JSON.parse(response.body)
+      "APIで予期せぬエラー発生が発生しました。"
     end
   end
 
@@ -72,10 +73,10 @@ class BitFlyerApi
     call_api("GET", uri)
   end
 
-  def my_executions(product_code)
+  def my_executions(product_code, child_order_acceptance_id)
     uri = uri()
     uri.path = "/v1/me/getexecutions"
-    uri.query = "product_code=#{product_code}"
+    uri.query = "product_code=#{product_code}&child_order_acceptance_id=#{child_order_acceptance_id}"
 
     call_api("GET", uri)
   end
@@ -96,24 +97,24 @@ class BitFlyerApi
     call_api("GET", uri)
   end
 
-  def market_buy()
+  def market_buy(product_code)
     body = {
-      "product_code": "BTC_JPY",
+      "product_code": product_code,
       "child_order_type": "MARKET",
       "side": "BUY",
-      "size": 0.001,
+      "size": 0.002,
       "minute_to_expire": 60,
       "time_in_force": "GTC"
     }.to_json
     order(body)
   end
 
-  def market_sell()
+  def market_sell(product_code)
     body = {
-      "product_code": "BTC_JPY",
+      "product_code": product_code,
       "child_order_type": "MARKET",
       "side": "SELL",
-      "size": 0.001,
+      "size": 0.001994,
       "minute_to_expire": 60,
       "time_in_force": "GTC"
     }.to_json
