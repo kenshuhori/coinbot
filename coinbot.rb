@@ -15,6 +15,7 @@ class Coinbot
       database: ENV['MYSQL_DATABASE']
     )
     @side = "BUY"
+    @buy_price = 0
     @asset_manager = AssetManager.new
   end
 
@@ -29,10 +30,10 @@ class Coinbot
       end
 
       current_data = @asset_manager.executions(@product_code).first
+      log_price(current_data)
       latest_prices.shift(1)
       latest_prices.push(current_data["price"])
-      log_price(current_data)
-      convert_now if check_conversion(latest_prices)
+      convert_now if check_conversion(latest_prices[0], latest_prices[1])
       sleep 60
     end
   end
@@ -46,13 +47,13 @@ class Coinbot
     cvrs.filter{ |cvr| cvr['child_order_acceptance_id'] == child_order_acceptance_id }
   end
 
-  def check_conversion(latest_prices)
-    return false if latest_prices[0].nil? || latest_prices[1].nil?
+  def check_conversion(previous_price, current_price)
+    return false if previous_price.nil? || current_price.nil?
 
     if @side == "BUY"
-      return true if latest_prices[1] > latest_prices[0]
+      return true if current_price > previous_price
     elsif @side == "SELL"
-      return true if latest_prices[1] < latest_prices[0]
+      return true if current_price < previous_price && current_price > @buy_price
     end
     false
   end
@@ -70,6 +71,7 @@ class Coinbot
     statement = @client.prepare(sql)
     exec_date = DateTime.parse(cvr.first['exec_date']).to_time + 32400
     statement.execute(@product_code, cvr.first['child_order_id'], cvr.first['price'], cvr.first['size'], "MARKET", cvr.first['side'], exec_date, Time.now)
+    @buy_price = cvr.first['price'] if @side == "BUY"
     switch_side()
   end
 
