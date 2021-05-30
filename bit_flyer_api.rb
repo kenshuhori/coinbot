@@ -54,7 +54,8 @@ class BitFlyerApi
     if response.msg == "OK"
       JSON.parse(response.body)
     else
-      "エラー発生！！！"
+      p JSON.parse(response.body)
+      "APIで予期せぬエラー発生が発生しました。"
     end
   end
 
@@ -101,7 +102,7 @@ class BitFlyerApi
       "product_code": product_code,
       "child_order_type": "MARKET",
       "side": "BUY",
-      "size": 0.001,
+      "size": 0.002,
       "minute_to_expire": 60,
       "time_in_force": "GTC"
     }.to_json
@@ -113,7 +114,7 @@ class BitFlyerApi
       "product_code": product_code,
       "child_order_type": "MARKET",
       "side": "SELL",
-      "size": 0.001,
+      "size": 0.001994,
       "minute_to_expire": 60,
       "time_in_force": "GTC"
     }.to_json
