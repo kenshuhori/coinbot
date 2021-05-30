@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS conversions
 (
  `id`               INT(20) AUTO_INCREMENT,
  `product_code`     VARCHAR(20) NOT NULL,
- `child_order_id`   VARCHAR(20) NOT NULL,
+ `child_order_id`   VARCHAR(30) NOT NULL,
  `price`            INT(20),
  `size`             INT(20),
  `type`             VARCHAR(20) NOT NULL,
