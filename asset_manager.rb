@@ -18,8 +18,8 @@ class AssetManager
     @bit_flyer_api.markets
   end
 
-  def my_executions(product_code)
-    @bit_flyer_api.my_executions(product_code)
+  def my_executions(product_code, child_order_acceptance_id)
+    @bit_flyer_api.my_executions(product_code, child_order_acceptance_id)
   end
 
   def executions(product_code)

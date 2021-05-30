@@ -72,10 +72,10 @@ class BitFlyerApi
     call_api("GET", uri)
   end
 
-  def my_executions(product_code)
+  def my_executions(product_code, child_order_acceptance_id)
     uri = uri()
     uri.path = "/v1/me/getexecutions"
-    uri.query = "product_code=#{product_code}"
+    uri.query = "product_code=#{product_code}&child_order_acceptance_id=#{child_order_acceptance_id}"
 
     call_api("GET", uri)
   end
