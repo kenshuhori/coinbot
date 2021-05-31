@@ -14,8 +14,13 @@ class Coinbot
       :encoding => ENV['MYSQL_ENCODING'],
       database: ENV['MYSQL_DATABASE']
     )
-    @side = "BUY"
-    @buy_price = 0
+    sql = %{
+      SELECT * FROM conversions ORDER BY created_at DESC LIMIT 1;
+    }
+    statement = @client.prepare(sql)
+    results = statement.execute()
+    @side = results.first['side'] == "BUY" ? "SELL" : "BUY"
+    @buy_price = @side == 'SELL' ? results.first['price'] : 0
     @asset_manager = AssetManager.new
   end
 
@@ -23,9 +28,9 @@ class Coinbot
     start_time = Time.now
     latest_prices = Array.new(2)
     loop do
-      # 1時間回す
-      if (Time.now - start_time)/60/60 > 1
-        p "1週間経過したため終了します"
+      # 5日間回す
+      if (Time.now - start_time)/60/60/24 > 5
+        p "5日間経過したため終了します"
         break
       end
 
