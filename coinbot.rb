@@ -29,8 +29,8 @@ class Coinbot
     latest_prices = Array.new(2)
     loop do
       # 5日間回す
-      if (Time.now - start_time)/60/60/24 > 5
-        p "5日間経過したため終了します"
+      if (Time.now - start_time)/60/60 > 24
+        p "24時間経過したため終了します"
         break
       end
 
