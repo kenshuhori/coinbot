@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS conversions
  `product_code`     VARCHAR(20) NOT NULL,
  `child_order_id`   VARCHAR(30) NOT NULL,
  `price`            INT(20),
- `size`             INT(20),
+ `size`             FLOAT,
  `type`             VARCHAR(20) NOT NULL,
  `side`             VARCHAR(20) NOT NULL,
  `created_at`       Datetime DEFAULT NULL,

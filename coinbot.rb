@@ -14,13 +14,15 @@ class Coinbot
       :encoding => ENV['MYSQL_ENCODING'],
       database: ENV['MYSQL_DATABASE']
     )
-    sql = %{
-      SELECT * FROM conversions ORDER BY created_at DESC LIMIT 1;
-    }
-    statement = @client.prepare(sql)
-    results = statement.execute()
-    @side = results.first['side'] == "BUY" ? "SELL" : "BUY"
-    @buy_price = @side == 'SELL' ? results.first['price'] : 0
+    # sql = %{
+    #   SELECT * FROM conversions ORDER BY created_at DESC LIMIT 1;
+    # }
+    # statement = @client.prepare(sql)
+    # results = statement.execute()
+    # @side = results.first['side'] == "BUY" ? "SELL" : "BUY"
+    # @buy_price = @side == 'SELL' ? results.first['price'] : 0
+    @side = "BUY"
+    @buy_price = 0
     @asset_manager = AssetManager.new
   end
 
@@ -58,8 +60,18 @@ class Coinbot
     if @side == "BUY"
       return true if current_price > previous_price
     elsif @side == "SELL"
-      return true if current_price < previous_price && current_price > @buy_price
+      return true if current_price < previous_price && exceed_commision?(current_price)
     end
+    false
+  end
+
+  def exceed_commision?(current_price)
+    if current_price > @buy_price
+      gain = current_price - @buy_price
+      commision = current_price * 0.002 * 0.003
+      return true if gain > commision
+    end
+
     false
   end
 
