@@ -67,7 +67,7 @@ class Coinbot
 
   def exceed_commision?(current_price)
     if current_price > @buy_price
-      gain = current_price - @buy_price
+      gain = (current_price - @buy_price) * 0.002
       commision = current_price * 0.002 * 0.003
       return true if gain > commision
     end
